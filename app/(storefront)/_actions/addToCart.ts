@@ -62,9 +62,7 @@ export default async function addToCart(productId: string) {
     }
   }
 
-  console.log(cart);
-
-  await redis.set(`cart:${user.id}`, cart);
+  await redis.set(`circle-store-cart:${user.id}`, cart);
 
   revalidatePath("/", "layout");
 }
