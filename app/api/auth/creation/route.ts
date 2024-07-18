@@ -2,7 +2,8 @@ import prisma from "@/utils/db";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { NextResponse } from "next/server";
 import { unstable_noStore as noStore } from "next/cache";
-
+import { v4 as uuidv4 } from "uuid";
+import circleUserServerSdk from "@/utils/circle-user-server";
 export async function GET() {
   noStore();
   const { getUser } = getKindeServerSession();
@@ -19,15 +20,22 @@ export async function GET() {
   });
 
   if (!dbUser) {
+    const uid = uuidv4();
     await prisma.user.create({
       data: {
         id: user.id,
+        uid,
         firstName: user.given_name ?? "",
         lastName: user.family_name ?? "",
         email: user.email ?? "",
         profileImage:
           user.picture ?? `https://avatar.vercel.sh/${user.given_name}`,
       },
+    });
+
+    // create circle user
+    await circleUserServerSdk.createUser({
+      userId: uid,
     });
   }
 
