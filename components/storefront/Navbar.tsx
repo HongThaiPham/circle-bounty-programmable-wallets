@@ -17,7 +17,9 @@ type Props = {};
 const Navbar: React.FC<Props> = async ({}) => {
   const { getUser } = getKindeServerSession();
   const user = await getUser();
-  const cart: CartType | null = await redis.get(`cart:${user?.id}`);
+  const cart: CartType | null = await redis.get(
+    `circle-store-cart:${user?.id}`
+  );
   const totalQuantity = cart?.items.reduce(
     (acc, item) => acc + item.quantity,
     0

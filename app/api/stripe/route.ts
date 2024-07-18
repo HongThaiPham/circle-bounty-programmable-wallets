@@ -32,7 +32,7 @@ export async function POST(req: Request) {
         },
       });
 
-      await redis.del(`cart:${session.metadata?.userId}`);
+      await redis.del(`circle-store-cart:${session.metadata?.userId}`);
       break;
     }
     default: {

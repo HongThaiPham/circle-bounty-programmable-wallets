@@ -15,7 +15,7 @@ export default async function addToCart(productId: string) {
     redirect("/");
   }
 
-  let cart: CartType | null = await redis.get(`cart:${user.id}`);
+  let cart: CartType | null = await redis.get(`circle-store-cart:${user.id}`);
 
   const productFromDb = await prisma.product.findUnique({
     where: {

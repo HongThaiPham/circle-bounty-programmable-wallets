@@ -22,7 +22,9 @@ const CartPage: React.FC<Props> = async ({}) => {
   if (!user) {
     redirect("/");
   }
-  const cart: CartType | null = await redis.get(`cart:${user?.id}`);
+  const cart: CartType | null = await redis.get(
+    `circle-store-cart:${user?.id}`
+  );
 
   const totalPrice =
     cart?.items.reduce((acc, item) => acc + item.price * item.quantity, 0) || 0;

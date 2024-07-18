@@ -16,7 +16,7 @@ export default async function removeFromCart(formData: FormData) {
 
   const productId = formData.get("productId") as string;
 
-  let cart: CartType | null = await redis.get(`cart:${user.id}`);
+  let cart: CartType | null = await redis.get(`circle-store-cart:${user.id}`);
 
   if (cart && cart.items) {
     const updatedCart: CartType = {
@@ -24,7 +24,7 @@ export default async function removeFromCart(formData: FormData) {
       items: cart.items.filter((item) => item.id !== productId),
     };
 
-    await redis.set(`cart:${user.id}`, updatedCart);
+    await redis.set(`circle-store-cart:${user.id}`, updatedCart);
   }
 
   revalidatePath("/", "layout");
