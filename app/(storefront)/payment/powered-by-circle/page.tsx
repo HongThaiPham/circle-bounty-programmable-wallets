@@ -1,13 +1,8 @@
-import UserWalletsSelect from "@/components/storefront/circle/UserWalletsSelect";
-import { Button } from "@/components/ui/button";
+import CircleCheckoutForm from "@/components/storefront/circle/CircleCheckoutForm";
 import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { XCircle } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import React from "react";
-import payWithCircle from "../../_actions/payWithCircle";
-import CircleCheckoutForm from "@/components/storefront/circle/CircleCheckoutForm";
 
 type Props = {};
 
@@ -22,6 +17,7 @@ const PayWithCirclePage: React.FC<Props> = ({}) => {
               width={100}
               height={100}
               alt="Circle Logo"
+              className="w-auto h-auto"
             />
           </CardTitle>
         </CardHeader>

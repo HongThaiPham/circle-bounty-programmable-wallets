@@ -1,49 +1,68 @@
 "use client";
+import SkeletonWapper from "@/components/SkeletonWapper";
+import useUserWallets from "@/hooks/useUserWallets";
+import { SelectProps } from "@radix-ui/react-select";
 import React from "react";
-import UserWalletsSelect from "./UserWalletsSelect";
-import { XCircle } from "lucide-react";
+import CircleInitWalletButton from "./CircleInitWalletButton";
+import { ArrowLeft, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ellipsify } from "@/lib/utils";
+import { toast } from "sonner";
+import CircleUsdcBalance from "./CircleUsdcBalance";
 import Link from "next/link";
-import payWithCircle from "@/app/(storefront)/_actions/payWithCircle";
-import { useFormState } from "react-dom";
-import { useForm } from "@conform-to/react";
-import { parseWithZod } from "@conform-to/zod";
+import CircleSubmitOrderButton from "./CircleSubmitOrderButton";
 
-type Props = {};
+type Props = {} & SelectProps;
 
-const CircleCheckoutForm: React.FC<Props> = ({}) => {
-  // const [lastResult, action] = useFormState(createProduct, undefined);
-  // const [form, fields] = useForm({
-  //   lastResult,
-  //   onValidate({ formData }) {
-  //     return parseWithZod(formData, { schema: productSchema });
-  //   },
-  //   shouldValidate: "onBlur",
-  //   shouldRevalidate: "onInput",
-  // });
-  return (
-    <form action={payWithCircle} className="space-y-3">
-      <UserWalletsSelect />
+const CircleCheckoutForm: React.FC<Props> = ({ ...props }) => {
+  const { data: walletData, isPending } = useUserWallets();
 
-      <div className="w-full flex justify-center">
-        <XCircle className="w-12 h-12 rounded-full bg-red-500/30 text-red-500 p-2" />
-      </div>
+  const handleCopyAddress = () => {
+    if (!walletData?.wallet) return;
+    navigator.clipboard.writeText(walletData?.wallet.address);
+    toast.success("Address copied to clipboard");
+  };
 
-      <div className="mt-3 text-center sm:mt-5 w-full">
-        <h3 className="text-lg leading-6 font-medium">Payment Cancelled</h3>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Something went wrong with your payment. You havent been charged.
-          Please try again
+  if (!isPending && !walletData?.wallet)
+    return (
+      <div className="space-y-2">
+        <p className="text-sm">
+          You don&apos;t have any wallet yet. Please create a wallet to continue
         </p>
-
-        <Button asChild className="w-full mt-5 sm:mt-6">
-          <Link href="/">Back to Homepage</Link>
-        </Button>
+        <CircleInitWalletButton />
       </div>
-      <Button className="w-full" type="submit">
-        Checkout
-      </Button>
-    </form>
+    );
+
+  return (
+    <SkeletonWapper isLoading={isPending}>
+      <div className="space-y-5">
+        <h3 className="text-md leading-6 font-medium">Your wallet address</h3>
+
+        <div className="p-2 text-muted-foreground border rounded-md shadow-sm flex items-center justify-between">
+          {walletData?.wallet && (
+            <span>{ellipsify(walletData.wallet.address, 16)}</span>
+          )}
+          <Button size={"icon"} variant={"ghost"} onClick={handleCopyAddress}>
+            <Copy className="w-4 h-4 cursor-pointer" />
+          </Button>
+        </div>
+        {walletData?.wallet && (
+          <CircleUsdcBalance walletId={walletData?.wallet.id} />
+        )}
+
+        <div className="flex items-center justify-between gap-3">
+          <Button asChild className="w-full" variant={"outline"}>
+            <Link href="/">
+              <ArrowLeft className="w-5 h-5 mr-3" />
+              Back to Homepage
+            </Link>
+          </Button>
+          {walletData?.wallet && (
+            <CircleSubmitOrderButton walletId={walletData?.wallet.id} />
+          )}
+        </div>
+      </div>
+    </SkeletonWapper>
   );
 };
 

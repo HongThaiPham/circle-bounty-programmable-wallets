@@ -33,6 +33,7 @@ const ProductCard: React.FC<Props> = ({ item }) => {
                   alt="Product Image"
                   fill
                   className="object-cover object-center w-full h-full rounded-lg"
+                  sizes="392px"
                 />
               </div>
             </CarouselItem>

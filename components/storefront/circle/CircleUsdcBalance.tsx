@@ -21,7 +21,7 @@ const CircleUsdcBalance: React.FC<Props> = ({ walletId, address }) => {
   return (
     <>
       <div className="flex items-center gap-2 justify-end">
-        <Image src="/USDC.svg" width={20} height={20} alt="USDC" />
+        <span className="text-sm text-muted-foreground">Balance: </span>
         {isPending ? (
           <Loader2 className="w-4 h-4 animate-spin" />
         ) : (
@@ -29,6 +29,7 @@ const CircleUsdcBalance: React.FC<Props> = ({ walletId, address }) => {
             {new Intl.NumberFormat("en-US").format(Number(usdcBalance || 0))}
           </span>
         )}
+        <Image src="/USDC.svg" width={20} height={20} alt="USDC" />
       </div>
       {address && Number(usdcBalance || 0) === 0 ? (
         <CircleFaucetButton address={address} />

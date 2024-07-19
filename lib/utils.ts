@@ -8,7 +8,9 @@ export function cn(...inputs: ClassValue[]) {
 export function ellipsify(str = "", len = 4) {
   if (str.length > 10) {
     return (
-      str.substring(0, len) + ".." + str.substring(str.length - len, str.length)
+      str.substring(0, len) +
+      "..." +
+      str.substring(str.length - (len > 4 ? len / 2 : len), str.length)
     );
   }
   return str;
