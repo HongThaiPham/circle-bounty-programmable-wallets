@@ -12,9 +12,11 @@ import CircleUsdcBalance from "./CircleUsdcBalance";
 import Link from "next/link";
 import CircleSubmitOrderButton from "./CircleSubmitOrderButton";
 
-type Props = {};
+type Props = {
+  mustPay: number;
+};
 
-const CircleCheckoutForm: React.FC<Props> = ({}) => {
+const CircleCheckoutForm: React.FC<Props> = ({ mustPay }) => {
   const { data: walletData, isPending } = useUserWallets();
 
   const handleCopyAddress = () => {
@@ -46,12 +48,20 @@ const CircleCheckoutForm: React.FC<Props> = ({}) => {
             <Copy className="w-4 h-4 cursor-pointer" />
           </Button>
         </div>
+
         {walletData?.wallet && (
           <CircleUsdcBalance
             walletId={walletData?.wallet.id}
             address={walletData.wallet.address}
           />
         )}
+
+        <div className="flex items-center gap-2 justify-end text-lg">
+          Total pay:{" "}
+          <span className="font-bold">
+            {new Intl.NumberFormat("en-US").format(mustPay)} USDC
+          </span>
+        </div>
 
         <div className="flex items-center justify-between gap-3">
           <Button asChild className="w-full" variant={"outline"}>

@@ -1,9 +1,11 @@
 import { useW3sContext } from "@/components/CircleClientProvider";
 import { axios } from "@/lib/axios";
 import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 const useInitCircleUser = () => {
+  const router = useRouter();
   const { client } = useW3sContext();
   return useMutation<{
     userToken: string;
@@ -21,8 +23,14 @@ const useInitCircleUser = () => {
       if (data.message) {
         toast.info(data.message);
       } else {
-        client?.execute(data.challengeId);
-        toast.success("Circle User initialized successfully");
+        client?.execute(data.challengeId, (error, result) => {
+          if (error) {
+            toast.error(error.message);
+          } else {
+            toast.success("Circle User initialized successfully");
+            router.refresh();
+          }
+        });
       }
     },
     onError: (error) => {

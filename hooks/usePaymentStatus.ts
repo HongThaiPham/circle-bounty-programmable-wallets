@@ -1,7 +1,7 @@
 import { axios } from "@/lib/axios";
 import { useQuery } from "@tanstack/react-query";
 
-const usePaymentStatus = (orderId: string, refetchInterval?: any) => {
+const usePaymentStatus = (orderId: string) => {
   return useQuery<{ orderId: string; status: "PENDING" | "COMPLETE" }>({
     queryKey: ["circle-payment-status", orderId],
     queryFn: async () => {

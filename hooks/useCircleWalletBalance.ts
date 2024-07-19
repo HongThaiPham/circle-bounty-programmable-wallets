@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 
 const useCircleWalletBalance = (walletId: string) => {
   return useQuery<{ tokenBalances: Balance[] }>({
-    queryKey: ["circle-wallet-balance", walletId],
+    queryKey: ["circle-wallet-balance"],
     queryFn: async () => {
       if (!walletId) return [];
       return axios
