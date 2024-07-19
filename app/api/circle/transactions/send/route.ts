@@ -15,7 +15,6 @@ export async function POST(req: Request) {
     walletId: string;
   } = body;
 
-  console.log("walletId", walletId);
   const { getUser } = getKindeServerSession();
   const user = await getUser();
 
