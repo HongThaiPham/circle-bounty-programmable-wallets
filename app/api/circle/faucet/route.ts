@@ -1,9 +1,15 @@
-import { getCircleUserAuthData } from "@/lib/circle";
 import circleUserServerSdk from "@/utils/circle-user-server";
 import prisma from "@/utils/db";
+import { TestnetBlockchain } from "@circle-fin/user-controlled-wallets/dist/types/clients/configurations";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 
-export async function GET() {
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const address = searchParams.get("address");
+  if (!address) {
+    return Response.json({ error: "Address is required" }, { status: 400 });
+  }
+  const blockchain = searchParams.get("blockchain") as TestnetBlockchain;
   const { getUser } = getKindeServerSession();
   const user = await getUser();
 
@@ -22,19 +28,11 @@ export async function GET() {
     return Response.json({ error: "User not found" }, { status: 404 });
   }
 
-  const authData = await getCircleUserAuthData(userDb.uid);
-  if (!authData.data) {
-    return Response.json(
-      { error: "Error when get auth data" },
-      { status: 401 }
-    );
-  }
-
-  const { data } = await circleUserServerSdk.listWallets({
-    userToken: authData.data?.userToken,
+  await circleUserServerSdk.requestTestnetTokens({
+    address,
+    blockchain: blockchain ?? "SOL-DEVNET",
+    usdc: true,
   });
 
-  return Response.json({
-    wallet: data?.wallets?.find((w) => w.blockchain === "SOL-DEVNET"),
-  });
+  return Response.json({ status: "ok" });
 }

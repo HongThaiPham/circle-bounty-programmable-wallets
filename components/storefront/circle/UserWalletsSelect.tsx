@@ -1,24 +1,33 @@
 "use client";
 import SkeletonWapper from "@/components/SkeletonWapper";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import useUserWallets from "@/hooks/useUserWallets";
 import { SelectProps } from "@radix-ui/react-select";
 import React from "react";
 import CircleInitWalletButton from "./CircleInitWalletButton";
+import CircleFaucetButton from "./CircleFaucetButton";
+import useCircleWalletBalance from "@/hooks/useCircleWalletBalance";
+import { Copy } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ellipsify } from "@/lib/utils";
+import { toast } from "sonner";
+import CircleUsdcBalance from "./CircleUsdcBalance";
 
 type Props = {} & SelectProps;
 
 const UserWalletsSelect: React.FC<Props> = ({ ...props }) => {
-  const { data, isPending } = useUserWallets();
-  if (data?.wallets.length === 0)
+  const { data: walletData, isPending } = useUserWallets();
+
+  const { data: tokenBalance } = useCircleWalletBalance(
+    walletData?.wallet.id ?? ""
+  );
+
+  const handleCopyAddress = () => {
+    if (!walletData?.wallet) return;
+    navigator.clipboard.writeText(walletData?.wallet.address);
+    toast.success("Address copied to clipboard");
+  };
+
+  if (!isPending && !walletData?.wallet)
     return (
       <div className="space-y-2">
         <p className="text-sm">
@@ -28,32 +37,21 @@ const UserWalletsSelect: React.FC<Props> = ({ ...props }) => {
       </div>
     );
 
-  const handleWalletChange = (value: string) => {
-    console.log(value);
-  };
-
   return (
     <SkeletonWapper isLoading={isPending}>
-      <h3 className="text-md leading-6 font-medium">Choose wallet to pay</h3>
-      <Select
-        {...props}
-        defaultValue={data?.wallets[0]?.id}
-        onValueChange={handleWalletChange}
-      >
-        <SelectTrigger className="w-full">
-          <SelectValue placeholder="Select wallet to pay" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            <SelectLabel>Your wallet</SelectLabel>
-            {data?.wallets.map((wallet) => (
-              <SelectItem key={wallet.id} value={wallet.id}>
-                {wallet.address}
-              </SelectItem>
-            ))}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
+      <h3 className="text-md leading-6 font-medium">Your wallet address</h3>
+
+      <div className="p-2 text-muted-foreground border rounded-md shadow-sm flex items-center justify-between">
+        {walletData?.wallet && (
+          <span>{ellipsify(walletData.wallet.address, 16)}</span>
+        )}
+        <Button size={"icon"} variant={"ghost"} onClick={handleCopyAddress}>
+          <Copy className="w-4 h-4 cursor-pointer" />
+        </Button>
+      </div>
+      {walletData?.wallet && (
+        <CircleUsdcBalance walletId={walletData?.wallet.id} />
+      )}
     </SkeletonWapper>
   );
 };

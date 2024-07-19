@@ -3,7 +3,8 @@ import circleUserServerSdk from "@/utils/circle-user-server";
 import prisma from "@/utils/db";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 
-export async function GET() {
+type Params = { params: { id: string } };
+export async function GET(req: Request, { params: { id } }: Params) {
   const { getUser } = getKindeServerSession();
   const user = await getUser();
 
@@ -22,19 +23,15 @@ export async function GET() {
     return Response.json({ error: "User not found" }, { status: 404 });
   }
 
-  const authData = await getCircleUserAuthData(userDb.uid);
-  if (!authData.data) {
-    return Response.json(
-      { error: "Error when get auth data" },
-      { status: 401 }
-    );
+  const { data: authRespone } = await getCircleUserAuthData(userDb.uid);
+  if (authRespone && authRespone.userToken && authRespone.encryptionKey) {
+    const { data } = await circleUserServerSdk.getWalletTokenBalance({
+      userToken: authRespone.userToken,
+      walletId: id,
+    });
+
+    return Response.json({ tokenBalances: data?.tokenBalances });
   }
 
-  const { data } = await circleUserServerSdk.listWallets({
-    userToken: authData.data?.userToken,
-  });
-
-  return Response.json({
-    wallet: data?.wallets?.find((w) => w.blockchain === "SOL-DEVNET"),
-  });
+  return Response.json({ tokenBalances: [] });
 }
