@@ -76,7 +76,7 @@ export async function POST(req: Request) {
       destinationAddress: process.env.NEXT_PUBLIC_STORE_PAYMENT_ADDRESS!,
       tokenAddress: process.env.NEXT_PUBLIC_USDC_ADDRESS!,
       blockchain: process.env.NEXT_PUBLIC_DEFAULT_BLOCKCHAIN! as Blockchain,
-      refId: createdOrder.id.toString(),
+      refId: `${user.id}|${createdOrder.id.toString()}`,
     });
 
     return Response.json({ challengeId: response.data?.challengeId });

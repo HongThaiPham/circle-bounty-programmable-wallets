@@ -1,46 +1,45 @@
 import { redis } from "@/lib/redis";
-import { stripe } from "@/lib/stripe";
+import CircleHookDataType from "@/types/CircleHookData.type";
 import prisma from "@/utils/db";
 import { headers } from "next/headers";
 
+// Define the EC public key ASN.1 syntax
+
 export async function POST(req: Request) {
-  const body = await req.text();
+  const body: CircleHookDataType = await req.json(); //await req.text();
 
   const keyId = headers().get("X-Circle-Key-Id") as string;
   const signature = headers().get("X-Circle-Signature") as string;
 
   console.table({ keyId, signature, body });
-  // let event;
 
-  // try {
-  //   event = stripe.webhooks.constructEvent(
-  //     body,
-  //     signature,
-  //     process.env.STRIPE_SECRET_WEBHOOK as string
-  //   );
-  // } catch (error: unknown) {
-  //   return new Response("Webhook Error", { status: 400 });
-  // }
+  if (
+    body.notificationType === "transactions.outbound" &&
+    body.notification.state === "COMPLETE"
+  ) {
+    const [userId, orderId] = body.notification.refId?.split("|") as string[];
+    await prisma.order.update({
+      where: {
+        id: orderId,
+      },
+      data: {
+        status: "COMPLETE",
+      },
+    });
 
-  // switch (event.type) {
-  //   case "checkout.session.completed": {
-  //     const session = event.data.object;
+    await redis.del(`circle-store-cart:${userId}`);
+  }
 
-  //     await prisma.order.create({
-  //       data: {
-  //         amount: session.amount_total as number,
-  //         status: session.status as string,
-  //         userId: session.metadata?.userId,
-  //       },
-  //     });
-
-  //     await redis.del(`circle-store-cart:${session.metadata?.userId}`);
-  //     break;
+  // veriry signature
+  // const checkPublicKey = await fetch(
+  //   `https://api.circle.com/v2/notifications/publicKey/${keyId}`,
+  //   {
+  //     headers: {
+  //       accept: "application/json",
+  //       Authorization: `Bearer ${process.env.CIRCLE_API_KEY}`,
+  //     },
   //   }
-  //   default: {
-  //     console.log("unhandled event");
-  //   }
-  // }
+  // ).then((res) => res.json());
 
   return new Response(null, { status: 200 });
 }
