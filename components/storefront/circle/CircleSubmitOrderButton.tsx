@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import useCircleSendTransaction from "@/hooks/useCircleSendTransaction";
 import { Loader2, Send } from "lucide-react";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 type Props = {
@@ -9,9 +10,11 @@ type Props = {
 };
 
 const CircleSubmitOrderButton: React.FC<Props> = ({ walletId }) => {
-  const { mutate, isPending } = useCircleSendTransaction(walletId);
-  const handleClick = () => {
-    mutate();
+  const router = useRouter();
+  const { mutateAsync, isPending } = useCircleSendTransaction(walletId);
+  const handleClick = async () => {
+    const data = await mutateAsync();
+    router.push(`/payment/powered-by-circle/status/${data.orderId}`);
   };
   return (
     <Button

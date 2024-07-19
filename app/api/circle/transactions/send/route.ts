@@ -79,7 +79,12 @@ export async function POST(req: Request) {
       refId: `${user.id}|${createdOrder.id.toString()}`,
     });
 
-    return Response.json({ challengeId: response.data?.challengeId });
+    return Response.json({
+      challengeId: response.data?.challengeId,
+      orderId: createdOrder.id,
+      userId: user.id,
+      circleId: userDb.uid,
+    });
   }
 
   return Response.json({ error: "Something went wrong." }, { status: 500 });

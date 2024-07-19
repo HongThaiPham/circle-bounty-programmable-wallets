@@ -5,7 +5,12 @@ import { toast } from "sonner";
 
 const useCircleSendTransaction = (walletId: string) => {
   const { client } = useW3sContext();
-  return useMutation<{ challengeId: string }>({
+  return useMutation<{
+    challengeId: string;
+    orderId: string;
+    userId: string;
+    circleId: string;
+  }>({
     mutationKey: ["send-transaction", walletId],
     mutationFn: async () => {
       const data = await axios
@@ -22,7 +27,7 @@ const useCircleSendTransaction = (walletId: string) => {
           if (error) {
             reject(error);
           } else if (result) {
-            resolve(data.challengeId);
+            resolve(data);
           }
         })
       );
