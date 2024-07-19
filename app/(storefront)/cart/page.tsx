@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { redis } from "@/lib/redis";
 import CartType from "@/types/Cart.type";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
-import { ShoppingBag } from "lucide-react";
+import { Bitcoin, CreditCard, ShoppingBag } from "lucide-react";
 import { getSupportedArchTriples } from "next/dist/build/swc";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,6 +12,7 @@ import removeFromCart from "../_actions/removeFromCart";
 import RemoveFromCartButton from "@/components/products/RemoveFromCartButton";
 import checkout from "../_actions/checkout";
 import ButtonSubmitProductForm from "@/components/products/ButtonSubmitProductForm";
+import { Separator } from "@/components/ui/separator";
 
 type Props = {};
 
@@ -82,13 +83,30 @@ const CartPage: React.FC<Props> = async ({}) => {
               <p>Subtotal:</p>
               <p>${new Intl.NumberFormat("en-US").format(totalPrice)}</p>
             </div>
+            <Separator className="my-5" />
 
-            <form action={checkout}>
-              <ButtonSubmitProductForm
-                text={"Checkout"}
-                className="w-full mt-5"
-              />
-            </form>
+            <div className="flex items-center justify-between font-medium">
+              <p>Payment method:</p>
+            </div>
+
+            <div className="mt-5 w-full space-y-5">
+              <form action={checkout} className="w-full">
+                <ButtonSubmitProductForm
+                  text={"Checkout with cash (Powered by Stripe)"}
+                  className="w-full"
+                  variant={"outline"}
+                  size={"lg"}
+                >
+                  <CreditCard className="w-6 h-6 mr-2" />
+                </ButtonSubmitProductForm>
+              </form>
+              <Button asChild className="w-full" size={"lg"}>
+                <Link href={"/payment/powered-by-circle"}>
+                  <Bitcoin className="w-6 h-6" />
+                  Checkout with USDC (Powered by Circle)
+                </Link>
+              </Button>
+            </div>
           </div>
         </div>
       )}

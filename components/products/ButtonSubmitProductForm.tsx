@@ -8,7 +8,11 @@ type Props = {
   text: string;
 } & ButtonProps;
 
-const ButtonSubmitProductForm: React.FC<Props> = ({ text, ...props }) => {
+const ButtonSubmitProductForm: React.FC<Props> = ({
+  text,
+  children,
+  ...props
+}) => {
   const { pending } = useFormStatus();
   return (
     <>
@@ -19,6 +23,7 @@ const ButtonSubmitProductForm: React.FC<Props> = ({ text, ...props }) => {
         </Button>
       ) : (
         <Button type="submit" {...props}>
+          {children}
           {text}
         </Button>
       )}

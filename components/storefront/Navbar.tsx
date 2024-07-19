@@ -11,7 +11,6 @@ import UserDropdowMenu from "./UserDropdowMenu";
 import { Button } from "../ui/button";
 import { redis } from "@/lib/redis";
 import CartType from "@/types/Cart.type";
-import CreateCircleUserButton from "./circle/CreateCircleUserButton";
 
 type Props = {};
 
@@ -38,7 +37,6 @@ const Navbar: React.FC<Props> = async ({}) => {
       <div className="flex items-center">
         {user ? (
           <>
-            <CreateCircleUserButton />
             <Link href={"/cart"} className="group p-2 flex items-center mr-2">
               <ShoppingBag className="h-6 w-6 text-muted-foreground group-hover:text-foreground transition-colors duration-300" />
               <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">

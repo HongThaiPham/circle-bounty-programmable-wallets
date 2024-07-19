@@ -16,3 +16,5 @@ export const bannerSchema = z.object({
   title: z.string({ message: "Banner name cannot be empty" }),
   imageString: z.string({ message: "Banner image cannot be empty" }),
 });
+
+export const circlePaymentSchema = z.object({});

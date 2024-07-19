@@ -4,7 +4,7 @@ import axios from "axios";
 
 export const restorePinHelper = async () => {
   const response = await axios.post<{ challengeId: string }>(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/users/pin/restore`
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/circle/users/pin/restore`
   );
 
   return response.data.challengeId;
