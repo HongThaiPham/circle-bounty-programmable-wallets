@@ -14,9 +14,7 @@ const useInitCircleUser = () => {
     mutationKey: ["init-circle-user"],
     mutationFn: async () => {
       return axios
-        .post(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/api/circle/api/circle/init-user`
-        )
+        .post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/circle/init-user`)
         .then((res) => res.data);
     },
     onSuccess: (data) => {
