@@ -2,14 +2,18 @@
 import { Button, ButtonProps } from "@/components/ui/button";
 import useInitCircleUser from "@/hooks/useInitCircleUser";
 import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 type Props = {} & ButtonProps;
 
 const CircleInitWalletButton: React.FC<Props> = ({}) => {
-  const { mutate, isPending } = useInitCircleUser();
+  const router = useRouter();
+
+  const { mutateAsync, isPending } = useInitCircleUser();
   const handleCreate = async () => {
-    mutate();
+    await mutateAsync();
+    router.refresh();
     // client?.execute(data.challengeId, (error, result) => {
     //   if (error) {
     //     alert("An error occurred on PIN Setup. Please try again.");

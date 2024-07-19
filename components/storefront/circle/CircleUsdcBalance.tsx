@@ -18,6 +18,7 @@ const CircleUsdcBalance: React.FC<Props> = ({ walletId, address }) => {
       (token) => token.token.symbol === "USDC"
     )?.amount;
   }, [tokenBalance?.tokenBalances]);
+
   return (
     <>
       <div className="flex items-center gap-2 justify-end">
@@ -31,9 +32,8 @@ const CircleUsdcBalance: React.FC<Props> = ({ walletId, address }) => {
         )}
         <Image src="/USDC.svg" width={20} height={20} alt="USDC" />
       </div>
-      {address && Number(usdcBalance || 0) === 0 ? (
-        <CircleFaucetButton address={address} />
-      ) : null}
+
+      <CircleFaucetButton address={address} />
     </>
   );
 };

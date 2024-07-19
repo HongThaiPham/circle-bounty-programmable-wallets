@@ -2,12 +2,38 @@
 import React from "react";
 import { useFormStatus } from "react-dom";
 import { Button } from "../ui/button";
-import { Loader2, ShoppingBag } from "lucide-react";
+import { Loader2, ShoppingCart } from "lucide-react";
 
-type Props = {};
+type Props = {
+  mini?: boolean;
+};
 
-const AddToCartButton: React.FC<Props> = ({}) => {
+const AddToCartButton: React.FC<Props> = ({ mini = false }) => {
   const { pending } = useFormStatus();
+
+  if (mini) {
+    return (
+      <>
+        {pending ? (
+          <Button
+            disabled
+            size="icon"
+            className="bg-orange-500 text-white hover:bg-orange-600"
+          >
+            <Loader2 className="h-5 w-5 animate-spin" />
+          </Button>
+        ) : (
+          <Button
+            size="icon"
+            type="submit"
+            className="bg-orange-500 text-white hover:bg-orange-600"
+          >
+            <ShoppingCart className="h-5 w-5" />
+          </Button>
+        )}
+      </>
+    );
+  }
 
   return (
     <>
@@ -17,7 +43,7 @@ const AddToCartButton: React.FC<Props> = ({}) => {
         </Button>
       ) : (
         <Button size="lg" className="w-full mt-5" type="submit">
-          <ShoppingBag className="mr-4 h-5 w-5" /> Add to Cart
+          <ShoppingCart className="mr-4 h-5 w-5" /> Add to Cart
         </Button>
       )}
     </>

@@ -14,11 +14,12 @@ const CircleSubmitOrderButton: React.FC<Props> = ({ walletId }) => {
   const { mutateAsync, isPending } = useCircleSendTransaction(walletId);
   const handleClick = async () => {
     const data = await mutateAsync();
-    router.push(`/payment/powered-by-circle/status/${data.orderId}`);
+    if (data?.orderId)
+      router.push(`/payment/powered-by-circle/status/${data.orderId}`);
   };
   return (
     <Button
-      className="bg-blue-500 text-white p-3 rounded-md w-full"
+      className="text-white p-3 rounded-md w-full"
       onClick={handleClick}
       disabled={isPending}
     >

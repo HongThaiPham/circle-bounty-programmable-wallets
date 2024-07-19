@@ -1,9 +1,10 @@
 import { axios } from "@/lib/axios";
 import { TestnetBlockchain } from "@circle-fin/user-controlled-wallets/dist/types/clients/configurations";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 const useCircleRequestTestnetToken = () => {
+  const queryCLient = useQueryClient();
   return useMutation({
     mutationKey: ["request-testnet-token"],
     mutationFn: async (params: {
@@ -23,7 +24,10 @@ const useCircleRequestTestnetToken = () => {
         }`
       );
     },
-    onSuccess: () => {
+    onSuccess: async () => {
+      await queryCLient.invalidateQueries({
+        queryKey: ["circle-wallet-balance"],
+      });
       toast.success("Request success");
     },
     onError: (error) => {

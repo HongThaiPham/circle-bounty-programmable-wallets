@@ -10,7 +10,7 @@ const useCircleSendTransaction = (walletId: string) => {
     orderId: string;
     userId: string;
     circleId: string;
-  }>({
+  } | null>({
     mutationKey: ["send-transaction", walletId],
     mutationFn: async () => {
       const data = await axios
@@ -22,6 +22,11 @@ const useCircleSendTransaction = (walletId: string) => {
         )
         .then((res) => res.data);
 
+      if (data.error) {
+        toast.error(data.error);
+        return null;
+      }
+
       return new Promise((resolve, reject) =>
         client?.execute(data.challengeId, (error, result) => {
           if (error) {
@@ -32,8 +37,10 @@ const useCircleSendTransaction = (walletId: string) => {
         })
       );
     },
-    onSuccess() {
-      toast.success("Transaction sent successfully");
+    onSuccess(data) {
+      if (data?.orderId) {
+        toast.success("Transaction sent successfully");
+      }
     },
     onError(error) {
       toast.error((error as any).response.data.message);

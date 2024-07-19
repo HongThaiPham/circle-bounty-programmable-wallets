@@ -9,6 +9,8 @@ import {
 import Link from "next/link";
 import { Button } from "../ui/button";
 import Image from "next/image";
+import addToCart from "@/app/(storefront)/_actions/addToCart";
+import AddToCartButton from "../products/AddToCartButton";
 
 type Props = {
   item: {
@@ -21,6 +23,7 @@ type Props = {
 };
 
 const ProductCard: React.FC<Props> = ({ item }) => {
+  const addProductToCart = addToCart.bind(null, item.id);
   return (
     <div className="rounded-lg">
       <Carousel className="w-full mx-auto">
@@ -53,9 +56,14 @@ const ProductCard: React.FC<Props> = ({ item }) => {
         {item.description}
       </p>
 
-      <Button asChild className="w-full mt-5">
-        <Link href={`/product/${item.id}`}>Learn More!</Link>
-      </Button>
+      <div className="flex items-center justify-between mt-5 gap-3">
+        <Button asChild className="w-full col-span-2" variant={"outline"}>
+          <Link href={`/product/${item.id}`}>Learn More!</Link>
+        </Button>
+        <form action={addProductToCart}>
+          <AddToCartButton mini />
+        </form>
+      </div>
     </div>
   );
 };

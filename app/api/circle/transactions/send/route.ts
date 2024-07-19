@@ -38,7 +38,7 @@ export async function POST(req: Request) {
   if (!cart || !cart.items || cart.items.length === 0) {
     return Response.json(
       {
-        message:
+        error:
           "Your cart is empty. Please add items to your cart before checking out.",
       },
       { status: 500 }
@@ -56,6 +56,13 @@ export async function POST(req: Request) {
     },
   });
 
+  if (!createdOrder) {
+    return Response.json({
+      error:
+        "Something went wrong. Cannot create order at this time. Please try again later",
+    });
+  }
+
   const { data: authRespone } = await getCircleUserAuthData(userDb.uid);
   if (
     authRespone &&
@@ -63,6 +70,30 @@ export async function POST(req: Request) {
     authRespone.encryptionKey &&
     createdOrder.id
   ) {
+    const { data: dataBalance } =
+      await circleUserServerSdk.getWalletTokenBalance({
+        userToken: authRespone.userToken,
+        walletId,
+      });
+
+    if (!dataBalance) {
+      return Response.json({
+        error:
+          "Cannot get wallet balance. Please try again later or contact support.",
+      });
+    }
+
+    const usdcBalance = dataBalance.tokenBalances?.find(
+      (token) => token.token.symbol === "USDC"
+    )?.amount;
+
+    if (!usdcBalance || Number(usdcBalance) < totalAmount) {
+      return Response.json({
+        error:
+          "Insufficient balance. Please top up your wallet before checking out.",
+      });
+    }
+
     const response = await circleUserServerSdk.createTransaction({
       userToken: authRespone.userToken,
       fee: {

@@ -30,12 +30,12 @@ const CirclePaymentStatusPage: React.FC<Props> = ({ params: { orderId } }) => {
             <h3 className="text-lg leading-6 font-medium">
               {data?.status === "COMPLETE"
                 ? "Process completed"
-                : "Processing your payment status"}
+                : "Processing your payment"}
             </h3>
             <p className="mt-2 text-sm text-muted-foreground">
               {data?.status === "COMPLETE"
                 ? "Congrats to your purchase. Your payment was succesfull. We hope you enjoy your product."
-                : "Your payment is still processing. Please wait a moment."}
+                : "Your payment is still processing. Please wait a moment. Do not close this page."}
             </p>
 
             <Button asChild className="w-full mt-5 sm:mt-6">

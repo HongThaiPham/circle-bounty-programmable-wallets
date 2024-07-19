@@ -11,6 +11,8 @@ type Props = {
 const CircleFaucetButton: React.FC<Props> = ({ address }) => {
   const { mutate, isPending } = useCircleRequestTestnetToken();
 
+  if (!address) return null;
+
   const handleClick = () => {
     if (!address) return;
     mutate({ address });
