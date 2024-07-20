@@ -14,7 +14,10 @@ const useUserWallets = (refetchInterval?: any) => {
   return useQuery<{ wallet: Wallet }>({
     queryKey: ["list-wallets"],
     queryFn: () => walletsHelper(),
-    refetchInterval: refetchInterval,
+    refetchInterval: (query) => {
+      if (query.state.data?.wallet.id) return 10000;
+      return 1000;
+    },
   });
 };
 

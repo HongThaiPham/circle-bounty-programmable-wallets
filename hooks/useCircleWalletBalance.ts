@@ -13,6 +13,7 @@ const useCircleWalletBalance = (walletId: string) => {
         )
         .then((res) => res.data);
     },
+    refetchInterval: 5000,
   });
 };
 

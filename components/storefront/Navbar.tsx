@@ -11,10 +11,12 @@ import UserDropdowMenu from "./UserDropdowMenu";
 import { Button } from "../ui/button";
 import { redis } from "@/lib/redis";
 import CartType from "@/types/Cart.type";
+import { unstable_noStore as noStore } from "next/cache";
 
 type Props = {};
 
 const Navbar: React.FC<Props> = async ({}) => {
+  noStore();
   const { getUser } = getKindeServerSession();
   const user = await getUser();
   const cart: CartType | null = await redis.get(
