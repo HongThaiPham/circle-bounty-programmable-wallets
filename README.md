@@ -1,6 +1,10 @@
 # Scope of Work
 
-Design and develop a web application or a Telegram or Discord bot using Programmable Wallets. Ensure that the front end is fully integrated with the Programmable Wallets and can be tested on platforms like Cloudflare or Vercel.
+Design and develop a project using one of the Circle APIs. Ensure that the frontend (FE) is fully integrated with the Circle API's and can be tested on platforms like Cloudflare or Vercel.
+
+In this project I used programable wallet to add a payment method that allows users who have registered an account to make purchases using USDC tokens.
+
+When users register for an account, they will be created an account on Circle API. When making payment, if they choose USDC as the payment method, they will be redirected to the payment page using a wallet created by Circle. If they do not have a wallet in their account, they will be allowed to create their own wallet and then deposit USDC to be able to make purchases.
 
 # Deploy your own
 
