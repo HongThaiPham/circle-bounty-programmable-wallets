@@ -9,7 +9,9 @@ When users register for an account, they will be created an account on Circle AP
 # Deploy your own
 
 Deploy the example using [Vercel](https://vercel.com/).
+
 Demo: [https://circlestore.leopham.app/](https://circlestore.leopham.app/)
+
 Video: https://www.loom.com/share/9987c3b7436449279f9d959e04209cb0?sid=1ca94a5f-f20f-4a3e-8276-a082c611bbae
 
 # Tech stack
